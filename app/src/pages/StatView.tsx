@@ -32,8 +32,8 @@ const StatView = () => {
     }, []);
 
     useEffect(() => {
-        setMostListenedSongs(getListenedTracks(streams, dateToTs(dateRange[0]), dateToTs(dateRange[1]), 20));
-        setMostListenedArtists(getListenedArtists(streams, dateToTs(dateRange[0]), dateToTs(dateRange[1]), 20));
+        setMostListenedSongs(getListenedTracks(streams, dateToTs(dateRange[0]), dateToTs(dateRange[1]), 100));
+        setMostListenedArtists(getListenedArtists(streams, dateToTs(dateRange[0]), dateToTs(dateRange[1]), 100));
     }, [dateRange]);
 
     if (streams.length === 0 || !firstStreamDate || !lastStreamDate) {
@@ -41,29 +41,31 @@ const StatView = () => {
     }
 
     return (
-        <div className="w-full">
-            <div className="w-full flex flex-row items-center">
-                <div className="w-full">
+        <div>
+            <div className="flex flex-row justify-between items-start gap-4 p-4">
+
+                <div className="w-150 h-180 overflow-auto">
                     <h1>Track Statistics</h1>
-                    <ul>
+                    <ul className="truncate">
                         {mostListenedSongs.map((track, index) => (
-                            <li key={index}>
+                            <li key={index} className="w-full h-6 overflow-hidden text-ellipsis whitespace-nowrap hover:underline">
                                 {track.master_metadata_track_name} - {formatSeconds(track.ms_played/1000)}
                             </li>
                         ))}
                     </ul>
                 </div>
 
-                <div className="w-full ml-4"> 
+                <div className="w-150 h-180 overflow-auto"> 
                     <h1>Artist Statistics</h1>
-                    <ul>
+                    <ul className="truncate">
                         {mostListenedArtists.map((artist, index) => (
-                            <li key={index}>
+                            <li key={index} className="w-full h-6 overflow-hidden text-ellipsis whitespace-nowrap hover:underline">
                                 {artist.master_metadata_album_artist_name} - {formatSeconds(artist.ms_played/1000)}
                             </li>
                         ))}
                     </ul>
                 </div>
+
             </div>
             
             <RangeSlider
@@ -79,7 +81,7 @@ const StatView = () => {
             />
 
             <p className="text-center">
-                {dateRange[0].toLocaleDateString()} - {dateRange[1].toLocaleDateString()}
+                {dateRange[0].toUTCString()} - {dateRange[1].toUTCString()} ({getDaysBetween(dateRange[0], dateRange[1])} days)
             </p>
         </div>
     )
