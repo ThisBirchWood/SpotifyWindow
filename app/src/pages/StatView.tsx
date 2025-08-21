@@ -48,8 +48,13 @@ const StatView = () => {
                     <h1>Track Statistics</h1>
                     <ul className="truncate">
                         {mostListenedSongs.map((track, index) => (
-                            <li key={index} className="w-full h-6 overflow-hidden text-ellipsis whitespace-nowrap hover:underline">
-                                {track.master_metadata_track_name} - {formatSeconds(track.ms_played/1000)}
+                            <li key={index} className="w-full h-6 flex items-center justify-between overflow-hidden hover:underline">
+                                  <div className="text-left truncate">
+                                    {index + 1}. {track.master_metadata_track_name}
+                                </div>
+                                <div className="text-right flex-shrink-0 ml-2">
+                                    {formatSeconds(track.ms_played / 1000)}
+                                </div>
                             </li>
                         ))}
                     </ul>
@@ -59,8 +64,13 @@ const StatView = () => {
                     <h1>Artist Statistics</h1>
                     <ul className="truncate">
                         {mostListenedArtists.map((artist, index) => (
-                            <li key={index} className="w-full h-6 overflow-hidden text-ellipsis whitespace-nowrap hover:underline">
-                                {artist.master_metadata_album_artist_name} - {formatSeconds(artist.ms_played/1000)}
+                            <li key={index} className="w-full h-6 flex items-center justify-between overflow-hidden hover:underline">
+                                <div className="text-left truncate">
+                                    {index + 1}. {artist.master_metadata_album_artist_name}
+                                </div>
+                                <div className="text-right flex-shrink-0 ml-2">
+                                    {formatSeconds(artist.ms_played / 1000)}
+                                </div>
                             </li>
                         ))}
                     </ul>
@@ -80,9 +90,47 @@ const StatView = () => {
                 className="w-full"
             />
 
-            <p className="text-center">
-                {dateRange[0].toUTCString()} - {dateRange[1].toUTCString()} ({getDaysBetween(dateRange[0], dateRange[1])} days)
-            </p>
+            <div className="text-center">
+                <input
+                    type="date"
+                    value={dateRange[0].toISOString().split('T')[0]}
+                    onChange={(e) => {
+                        if (new Date(e.target.value) > dateRange[1]) {
+                            alert('Start date cannot be after end date');
+                            return;
+                        }
+
+
+                        // check if valid date
+                        if (isNaN(new Date(e.target.value).getTime())) {
+                            return;
+                        }
+                        
+                        setDateRange([new Date(e.target.value), dateRange[1]])
+                    }}
+                    className="mr-2"
+                />
+                <input
+                    type="date"
+                    value={dateRange[1].toISOString().split('T')[0]}
+                    onChange={(e) => {
+                        if (new Date(e.target.value) < dateRange[0]) {
+                            alert('End date cannot be before start date');
+                            return;
+                        }
+
+                        // check if valid date
+                        if (isNaN(new Date(e.target.value).getTime())) {
+                            return;
+                        }
+
+                        setDateRange([dateRange[0], new Date(e.target.value)]);
+                    }}
+                    className="ml-2"
+                />
+
+                <p>({getDaysBetween(dateRange[0], dateRange[1])} days)</p>
+            </div>
         </div>
     )
 }

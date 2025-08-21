@@ -4,9 +4,9 @@ const formatSeconds = (seconds: number): string => {
     const secs = Math.floor(seconds % 60);
 
     return [
-        hours > 0 ? `${hours}h` : '',
-        minutes > 0 ? `${minutes}m` : '',
-        secs > 0 ? `${secs}s` : ''
+        hours > 0 ? `${hours}h` : '0h',
+        minutes > 0 ? `${minutes}m` : '0m',
+        secs > 0 ? `${secs}s` : '0s'
     ].filter(Boolean).join(' ');
 }
 

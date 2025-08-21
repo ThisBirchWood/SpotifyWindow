@@ -39,7 +39,7 @@ const getListenedArtists = (streams: stream[], startDate: string, endDate: strin
     const artistMap: Record<string, stream> = {};
 
     streams.forEach(stream => {
-        if (stream.ts < startDate || stream.ts > endDate) {
+        if (stream.ts < startDate || stream.ts > endDate || !stream.master_metadata_album_artist_name) {
             return; // Skip streams outside the date range
         }
 
