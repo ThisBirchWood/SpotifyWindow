@@ -13,10 +13,12 @@ const StatView = () => {
 	const [mostListenedSongs, setMostListenedSongs] = useState<stream[]>([]);
 	const [mostListenedArtists, setMostListenedArtists] = useState<stream[]>([]);
 
+	const [dateRange, setDateRange] = useState<[Date, Date]>([new Date(), new Date()]);
 	const [firstStreamDate, setFirstStreamDate] = useState<Date>();
 	const [lastStreamDate, setLastStreamDate] = useState<Date>();
 
-	const [dateRange, setDateRange] = useState<[Date, Date]>([new Date(), new Date()]);
+	const [dynamicBackgrounds, setDynamicBackgrounds] = useState<boolean>(false);
+
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -57,7 +59,7 @@ const StatView = () => {
 	};
 
 	return (
-        <div>
+		<div>
 			<Back className="absolute top-4 left-4 cursor-pointer hover:opacity-70" size={40} onClick={() => navigate(-1)} />
 			<div className="flex flex-row justify-between items-start gap-4 p-4 h-[700px]">
 				<div className="flex flex-col overflow-hidden w-150 h-full">
@@ -66,14 +68,16 @@ const StatView = () => {
 						{mostListenedSongs.map((track, index) => (
 							<li
 								key={index}
-								className={`w-full h-[30px] flex items-center justify-between overflow-hidden hover:underline ${
+								className={`w-full h-[30px] flex items-center justify-between overflow-hidden hover:underline duration-150 ${
 									track.spotify_track_uri ? "cursor-pointer" : ""
 								}`}
-								style={{
-									background: `hsl(${
-										(((stringToHash(track.master_metadata_track_name + track.spotify_track_uri || "") % 100) + 100) % 100) + 260
-									}, 50%, 20%)`,
-								}}
+								style={
+									dynamicBackgrounds
+										? {
+												background: `hsl(${stringToHash(track.master_metadata_track_name + track.spotify_track_uri || "")}, 50%, 20%)`,
+										  }
+										: {}
+								}
 							>
 								<div className="ml-2 text-left truncate text-ellipsis">
 									<strong className="inline-block w-[30px]">{index + 1}.</strong> {track.master_metadata_track_name}
@@ -90,12 +94,14 @@ const StatView = () => {
 						{mostListenedArtists.map((artist, index) => (
 							<li
 								key={index}
-								className="w-full h-[30px] flex items-center justify-between overflow-hidden hover:underline"
-								style={{
-									background: `hsl(${
-										(((stringToHash(artist.master_metadata_album_artist_name || "") % 100) + 100) % 100) + 180
-									}, 50%, 20%)`,
-								}}
+								className="w-full h-[30px] flex items-center justify-between overflow-hidden hover:underline duration-150"
+								style={
+									dynamicBackgrounds
+										? {
+												background: `hsl(${stringToHash(artist.master_metadata_album_artist_name || "")}, 50%, 20%)`,
+										  }
+										: {}
+								}
 							>
 								<div className="ml-2 text-left truncate text-ellipsis">
 									<strong className="inline-block w-[30px]">{index + 1}.</strong> {artist.master_metadata_album_artist_name}
@@ -159,6 +165,18 @@ const StatView = () => {
 				/>
 
 				<p>({getDaysBetween(dateRange[0], dateRange[1])} days)</p>
+
+				<div className="mt-4">
+					<label className="flex items-center justify-center gap-2 cursor-pointer">
+						<input
+							type="checkbox"
+							checked={dynamicBackgrounds}
+							onChange={(e) => setDynamicBackgrounds(e.target.checked)}
+							className="w-4 h-4"
+						/>
+						<span>Enable Dynamic Backgrounds</span>
+					</label>
+				</div>
 			</div>
 		</div>
 	);
