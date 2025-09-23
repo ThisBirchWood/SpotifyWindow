@@ -60,6 +60,7 @@ const StatView = () => {
 
 	return (
 		<div>
+			<h1 className="title">Spotify Window</h1>
 			<Back className="absolute top-4 left-4 cursor-pointer hover:opacity-70" size={40} onClick={() => navigate(-1)} />
 			<div className="flex flex-row justify-between items-start gap-4 p-4 h-[700px]">
 				<div className="flex flex-col overflow-hidden w-150 h-full">
