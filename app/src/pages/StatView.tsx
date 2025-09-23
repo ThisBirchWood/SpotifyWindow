@@ -82,6 +82,7 @@ const StatView = () => {
                 min={0}
                 max={getDaysBetween(firstStreamDate, lastStreamDate)}
                 step={1}
+				defaultValue={[0, getDaysBetween(firstStreamDate, lastStreamDate)]} // This bad boy right here
                 onInput={(value) => {
                     const startDate = getDaysAfter(firstStreamDate, value[0]);
                     const endDate = getDaysAfter(firstStreamDate, value[1]);
