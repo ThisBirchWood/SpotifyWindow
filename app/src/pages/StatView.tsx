@@ -78,6 +78,9 @@ const StatView = () => {
 										  }
 										: {}
 								}
+								onClick={() => {
+									window.open(`https://open.spotify.com/track/${track.spotify_track_uri?.split(":").pop()}`, "_blank");
+								}}
 							>
 								<div className="ml-2 text-left truncate text-ellipsis">
 									<strong className="inline-block w-[30px]">{index + 1}.</strong> {track.master_metadata_track_name}
