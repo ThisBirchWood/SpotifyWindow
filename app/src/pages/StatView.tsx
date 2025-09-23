@@ -45,38 +45,62 @@ const StatView = () => {
 		return <div>Loading...</div>;
 	}
 
-	return (
-		<div>
-            <div className="flex flex-row justify-between items-start gap-4 p-4">
-			<Back className="absolute top-4 left-4 cursor-pointer hover:opacity-70" size={40} onClick={() => navigate(-1)} />
+	const stringToHash = (str: string) => {
+		if (!str) return 0;
+		let hash = 0;
+		for (let i = 0; i < str.length; i++) {
+			const char = str.charCodeAt(i);
+			hash = (hash << 5) - hash + char;
+			hash = hash & hash; // Convert to 32-bit integer
+		}
+		return Math.abs(hash);
+	};
 
-                <div className="w-150 h-180 overflow-auto">
+	return (
+        <div>
+			<Back className="absolute top-4 left-4 cursor-pointer hover:opacity-70" size={40} onClick={() => navigate(-1)} />
+			<div className="flex flex-row justify-between items-start gap-4 p-4 h-[700px]">
+				<div className="flex flex-col overflow-hidden w-150 h-full">
 					<h1>Track Statistics</h1>
-                    <ul className="truncate">
+					<ul className="truncate overflow-auto h-full">
 						{mostListenedSongs.map((track, index) => (
-                            <li key={index} className="w-full h-6 flex items-center justify-between overflow-hidden hover:underline">
-                                  <div className="text-left truncate">
-                                    {index + 1}. {track.master_metadata_track_name}
+							<li
+								key={index}
+								className={`w-full h-[30px] flex items-center justify-between overflow-hidden hover:underline ${
+									track.spotify_track_uri ? "cursor-pointer" : ""
+								}`}
+								style={{
+									background: `hsl(${
+										(((stringToHash(track.master_metadata_track_name + track.spotify_track_uri || "") % 100) + 100) % 100) + 260
+									}, 50%, 20%)`,
+								}}
+							>
+								<div className="ml-2 text-left truncate text-ellipsis">
+									<strong className="inline-block w-[30px]">{index + 1}.</strong> {track.master_metadata_track_name}
 								</div>
-                                <div className="text-right flex-shrink-0 ml-2">
-                                    {formatSeconds(track.ms_played / 1000)}
-                                </div>
+								<div className="text-left w-[100px] flex-shrink-0 ml-2">{formatSeconds(track.ms_played / 1000)}</div>
 							</li>
 						))}
 					</ul>
 				</div>
 
-                <div className="w-150 h-180 overflow-auto"> 
+				<div className="flex flex-col overflow-hidden w-150 h-full">
 					<h1>Artist Statistics</h1>
-                    <ul className="truncate">
+					<ul className="truncate overflow-auto h-full">
 						{mostListenedArtists.map((artist, index) => (
-                            <li key={index} className="w-full h-6 flex items-center justify-between overflow-hidden hover:underline">
-                                <div className="text-left truncate">
-                                    {index + 1}. {artist.master_metadata_album_artist_name}
+							<li
+								key={index}
+								className="w-full h-[30px] flex items-center justify-between overflow-hidden hover:underline"
+								style={{
+									background: `hsl(${
+										(((stringToHash(artist.master_metadata_album_artist_name || "") % 100) + 100) % 100) + 180
+									}, 50%, 20%)`,
+								}}
+							>
+								<div className="ml-2 text-left truncate text-ellipsis">
+									<strong className="inline-block w-[30px]">{index + 1}.</strong> {artist.master_metadata_album_artist_name}
 								</div>
-                                <div className="text-right flex-shrink-0 ml-2">
-                                    {formatSeconds(artist.ms_played / 1000)}
-                                </div>
+								<div className="text-left w-[100px] flex-shrink-0 ml-2">{formatSeconds(artist.ms_played / 1000)}</div>
 							</li>
 						))}
 					</ul>
